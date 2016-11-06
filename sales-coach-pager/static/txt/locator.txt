@@ -1,0 +1,3 @@
+login_user=com.nineteenthmile:id/edit_username
+login_pass=com.nineteenthmile:id/edit_password
+logout_icon=com.nineteenthmile:id/logout_view_logout_icon
