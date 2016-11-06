@@ -24,9 +24,9 @@ class TestsDemo(unittest.TestCase):
         self.screen_saver = self.conf['screen_saver']
         self.coords_12 = self.conf['coords_12_{0}'.format(SCREEN_SIZE)].split(',')
 
-        # for screenshots
+        # screenshots
         self.screen_path = os.path.join(self.screen_saver, self.__class__.__name__ + '_' +
-                                        time.strftime("%H%M%d%m%y", time.gmtime()))
+                                        time.strftime("%H%M%d%m%y", time.localtime()))
         if not os.path.exists(self.screen_path):
             os.mkdir(self.screen_path)
 
@@ -61,7 +61,7 @@ class TestsDemo(unittest.TestCase):
         self._sign_out()
 
         self._login_routine(self.conf['manager'], self.conf['password'], force_login=True)
-        time.slee(10)  # make sure it's all downloaded. sometimes server is very slow. increase if needed
+        time.sleep(10)  # make sure it's all downloaded. sometimes server is very slow. increase if needed
         self._delete_all_activities()
         self._navigate_to_leads_routine()
         self._delete_all_leads()
@@ -369,7 +369,7 @@ class TestsDemo(unittest.TestCase):
                 lead_found = True
                 break # lead found
 
-        self.assertIsNotNone(lead_found, msg='Have not found any lead! Test must have at least one lead')
+        self.assertIsNotNone(lead_found, msg='Lead not found. Must have at least one lead created before test starts')
 
         action.long_press(els[0]).perform()
 
@@ -431,7 +431,7 @@ class TestsDemo(unittest.TestCase):
             EC.presence_of_element_located((By.ID, 'com.nineteenthmile:id/add_agent_name')))
         action.tap(el).perform()
 
-        text_channel = 'Add channel partner ' + time.strftime("%H:%M:%S", time.gmtime())
+        text_channel = 'Add channel partner ' + time.strftime("%H:%M:%S", time.localtime())
         el.send_keys(text_channel)
         self.driver.hide_keyboard('Done')
 
@@ -695,7 +695,7 @@ class TestsDemo(unittest.TestCase):
           
         self._tap_today_and_ok()
           
-        today = time.strftime("%d %b, %Y", time.gmtime())
+        today = time.strftime("%d %b, %Y", time.localtime())
         el = self.driver.find_element_by_accessibility_id('choose_expected_close_date')
         self.assertEqual(el.text, today)
           
@@ -703,7 +703,7 @@ class TestsDemo(unittest.TestCase):
         el = self.driver.find_element_by_id('com.nineteenthmile:id/button_done')
         action.tap(el).perform()
 
-        # appium is too slow this messages
+        # appium is too slow
         # for i in range(3):
         #     self.driver.save_screenshot(os.path.join(self.screen_path, "TIME_%s_TOAST_%d.png" % (screenshot_err, i)))
         #     time.sleep(0.5)
@@ -802,8 +802,7 @@ class TestsDemo(unittest.TestCase):
     def _tap_today_and_ok(self):
         
         # tap on today
-        today = time.strftime("%d %B %Y", time.gmtime())
-        # print('Time: %s' % today)
+        today = time.strftime("%d %B %Y", time.localtime())
         el = WebDriverWait(self.driver, 10).until(lambda function: self.driver.find_element_by_accessibility_id(today + ' selected'))
         action = TouchAction(self.driver)
         action.tap(el).perform()
@@ -817,12 +816,12 @@ if __name__ == "__main__":
     # unittest.TextTestRunner(verbosity=2).run(suite)
     
     suite = unittest.TestSuite()
-    # suite.addTest(TestsDemo("test_prep"))
-    # suite.addTest(TestsDemo("test_android_001"))
+    suite.addTest(TestsDemo("test_prep"))
+    suite.addTest(TestsDemo("test_android_001"))
     suite.addTest(TestsDemo("test_android_002_003_004"))
-    # suite.addTest(TestsDemo("test_android_005_007"))
-    # suite.addTest(TestsDemo("test_android_006"))
-    # suite.addTest(TestsDemo("test_android_008"))
+    suite.addTest(TestsDemo("test_android_005_007"))
+    suite.addTest(TestsDemo("test_android_006"))
+    suite.addTest(TestsDemo("test_android_008"))
     runner = unittest.TextTestRunner()
     runner.run(suite)
 
